@@ -192,3 +192,46 @@ describe("Given that I am a user on login page", () => {
     });
   });
 });
+describe("Given that I am a user on login page", () => {
+  beforeEach(() => {
+    setupLocalStorage()
+    document.body.innerHTML = LoginUI(); 
+  })
+
+
+ describe("When login fails for employee", () => {
+  test("Then createUser fallback is triggered and redirects to Bills", async () => {
+    const inputEmailUser = screen.getByTestId("employee-email-input");
+    fireEvent.change(inputEmailUser, { target: { value: "newuser@email.com" } });
+
+    const inputPasswordUser = screen.getByTestId("employee-password-input");
+    fireEvent.change(inputPasswordUser, { target: { value: "azerty" } });
+
+    const form = screen.getByTestId("form-employee");
+
+    const store = {
+      login: jest.fn().mockRejectedValue(new Error("User not found")),
+      users: jest.fn().mockReturnValue({
+        create: jest.fn().mockResolvedValue({})
+      })
+    };
+
+    store.login
+      .mockRejectedValueOnce(new Error("User not found"))
+      .mockResolvedValueOnce({ jwt: "fake-jwt" })
+
+    initLoginPage({
+      document,
+      localStorage: window.localStorage,
+      onNavigate,
+      store
+    });
+
+    fireEvent.submit(form);
+
+    await waitFor(() => expect(screen.getByText("Mes notes de frais")).toBeTruthy());
+    expect(store.users).toHaveBeenCalled();
+  });
+});
+
+})

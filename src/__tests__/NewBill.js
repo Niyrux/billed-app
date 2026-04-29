@@ -16,7 +16,6 @@ describe("Given I am connected as an employee", () => {
 
     test("Then the form should be rendered with all required fields", () => {
       expect(screen.getByTestId("form-new-bill")).toBeTruthy()
-
       expect(screen.getByTestId("expense-type")).toBeTruthy()
       expect(screen.getByTestId("expense-name")).toBeTruthy()
       expect(screen.getByTestId("datepicker")).toBeTruthy()
@@ -29,7 +28,6 @@ describe("Given I am connected as an employee", () => {
 
     test("Then the submit button should be rendered", () => {
       const submitButton = screen.getByText("Envoyer")
-
       expect(submitButton).toBeTruthy()
       expect(submitButton.type).toBe("submit")
     })
@@ -50,50 +48,40 @@ describe("Given I am connected as an employee", () => {
 
     test("Then uploading a valid file should work", () => {
       const fileInput = screen.getByTestId("file")
-
       const file = new File(["image"], "test.png", { type: "image/png" })
-
-      Object.defineProperty(fileInput, "files", {
-        value: [file],
-      })
-
+      Object.defineProperty(fileInput, "files", { value: [file] })
       fileInput.dispatchEvent(new Event("change"))
-
       expect(fileInput.files[0].name).toBe("test.png")
     })
 
     test("Then uploading an invalid file should still trigger change", () => {
       const fileInput = screen.getByTestId("file")
-
       const file = new File(["doc"], "test.pdf", { type: "application/pdf" })
-
-      Object.defineProperty(fileInput, "files", {
-        value: [file],
-      })
-
+      Object.defineProperty(fileInput, "files", { value: [file] })
       fileInput.dispatchEvent(new Event("change"))
-
       expect(fileInput.files[0].type).toBe("application/pdf")
     })
 
     test("Then submitting the form should trigger submit handler", () => {
       const form = screen.getByTestId("form-new-bill")
-
       const mockSubmit = jest.fn()
       form.addEventListener("submit", mockSubmit)
-
       form.dispatchEvent(new Event("submit"))
-
       expect(mockSubmit).toHaveBeenCalled()
     })
 
     test("Then initNewBillPage should initialize the page", () => {
-      initNewBillPage()
-
+      initNewBillPage({
+        document,
+        onNavigate: jest.fn(),
+        store: null,
+        localStorage: {
+          getItem: () => JSON.stringify({ email: "test@test.com" })
+        }
+      })
       const form = screen.getByTestId("form-new-bill")
       expect(form).toBeTruthy()
     })
-
   })
 })
 
@@ -113,7 +101,6 @@ describe("NewBill core behavior (clean coverage)", () => {
         <button type="submit"></button>
       </form>
     `
-
     Object.defineProperty(window, 'localStorage', {
       value: {
         getItem: () => JSON.stringify({ email: "test@test.com" })
@@ -125,7 +112,6 @@ describe("NewBill core behavior (clean coverage)", () => {
     const mockCreate = jest.fn(() =>
       Promise.resolve({ fileUrl: "url.jpg", key: "123" })
     )
-
     const mockStore = {
       bills: () => ({ create: mockCreate })
     }
@@ -133,93 +119,77 @@ describe("NewBill core behavior (clean coverage)", () => {
     initNewBillPage({
       document,
       onNavigate: jest.fn(),
-      store: mockStore,
-      localStorage: window.localStorage
+      store: mockStore,   
+      localStorage: {
+        getItem: () => JSON.stringify({ email: "test@test.com" })
+      }
     })
 
     const fileInput = document.querySelector('[data-testid="file"]')
     const file = new File(["img"], "test.jpg", { type: "image/jpg" })
-
     Object.defineProperty(fileInput, "files", { value: [file] })
     fileInput.dispatchEvent(new Event("change"))
 
     await Promise.resolve()
-
     expect(mockCreate).toHaveBeenCalled()
   })
 
   test("should show alert when file is invalid", () => {
     window.alert = jest.fn()
-
     initNewBillPage({
       document,
       onNavigate: jest.fn(),
       store: null,
       localStorage: window.localStorage
     })
-
     const fileInput = document.querySelector('[data-testid="file"]')
     const file = new File(["doc"], "test.pdf", { type: "application/pdf" })
-
     Object.defineProperty(fileInput, "files", { value: [file] })
     fileInput.dispatchEvent(new Event("change"))
-
     expect(window.alert).toHaveBeenCalled()
   })
 
   test("should submit form and navigate", async () => {
     const mockUpdate = jest.fn(() => Promise.resolve())
     const mockNavigate = jest.fn()
-
     const mockStore = {
       bills: () => ({ update: mockUpdate })
     }
-
     initNewBillPage({
       document,
       onNavigate: mockNavigate,
       store: mockStore,
       localStorage: window.localStorage
     })
-
     document.querySelector('[data-testid="expense-name"]').value = "test"
     document.querySelector('[data-testid="amount"]').value = "100"
     document.querySelector('[data-testid="datepicker"]').value = "2022-01-01"
     document.querySelector('[data-testid="vat"]').value = "20"
     document.querySelector('[data-testid="pct"]').value = "10"
     document.querySelector('[data-testid="commentary"]').value = "ok"
-
     const form = document.querySelector('[data-testid="form-new-bill"]')
     form.dispatchEvent(new Event("submit"))
-
     await Promise.resolve()
-
     expect(mockUpdate).toHaveBeenCalled()
     expect(mockNavigate).toHaveBeenCalled()
   })
 
   test("should handle API error on submit", async () => {
     console.error = jest.fn()
-
     const mockStore = {
       bills: () => ({
         update: () => Promise.reject("ERROR")
       })
     }
-
     initNewBillPage({
       document,
       onNavigate: jest.fn(),
       store: mockStore,
       localStorage: window.localStorage
     })
-
     const form = document.querySelector('[data-testid="form-new-bill"]')
     form.dispatchEvent(new Event("submit"))
-
-    await Promise.resolve()
-
+    await new Promise(process.nextTick)
     expect(console.error).toHaveBeenCalled()
   })
-
 })

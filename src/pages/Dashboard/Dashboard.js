@@ -290,9 +290,7 @@ export const getBillsAllUsers = async (store) => {
   return []
 }
 
-/**
- * Met à jour une bill
- */
+//Met à jour une bill
 export const updateBill = async (bill, store) => {
   if (store) {
     try {
@@ -307,9 +305,7 @@ export const updateBill = async (bill, store) => {
   }
 }
 
-/**
- * Réinitialise l'état du dashboard (utile pour les tests)
- */
+//Réinitialise l'état du dashboard (utile pour les tests)
 export const resetDashboardState = () => {
   dashboardState = {
     counter: undefined,

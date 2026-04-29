@@ -8,9 +8,8 @@ let billFileState = {
   billId: null
 }
 
-/**
- * Initialise la page NewBill - Attache les event listeners
- */
+// Initialise la page NewBill - Attache les event listeners
+
 export const initNewBillPage = ({ document, onNavigate, store, localStorage }) => {
   const formNewBill = document.querySelector(`form[data-testid="form-new-bill"]`)
   formNewBill.addEventListener("submit", (e) => handleSubmit(e, { onNavigate, store, localStorage }))
@@ -22,9 +21,10 @@ export const initNewBillPage = ({ document, onNavigate, store, localStorage }) =
   new Logout({ document, localStorage, onNavigate })
 }
 
-/**
- * Gère le changement de fichier (upload)
- */
+// Gère le changement de fichier (upload)
+/*
+* FIX Bug autorisé uniquement les fichiers .jpg, .jpeg et .png
+*/
 const handleChangeFile = (e, { store, localStorage }) => {
   e.preventDefault()
   const fileInput = e.target
@@ -64,9 +64,7 @@ const handleChangeFile = (e, { store, localStorage }) => {
   }
 }
 
-/**
- * Gère la soumission du formulaire
- */
+//Gère la soumission du formulaire
 const handleSubmit = (e, { onNavigate, store, localStorage }) => {
   e.preventDefault()
 
@@ -92,9 +90,7 @@ const handleSubmit = (e, { onNavigate, store, localStorage }) => {
   updateBill(bill, { billId: billFileState.billId, store, onNavigate })
 }
 
-/**
- * Met à jour la bill dans le store
- */
+//Met à jour la bill dans le store
 const updateBill = (bill, { billId, store, onNavigate }) => {
   if (store) {
     store
@@ -107,9 +103,7 @@ const updateBill = (bill, { billId, store, onNavigate }) => {
   }
 }
 
-/**
- * Réinitialise l'état du fichier (utile pour les tests)
- */
+//Réinitialise l'état du fichier (utile pour les tests)
 export const resetBillFileState = () => {
   billFileState = {
     fileUrl: null,

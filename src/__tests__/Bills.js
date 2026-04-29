@@ -7,6 +7,7 @@ import BillsUI from "../pages/Bills/BillsUI.js"
 import { bills } from "../fixtures/bills.js"
 import { ROUTES_PATH } from "../constants/routes.js";
 import { localStorageMock } from "../__mocks__/localStorage.js";
+import { initBillsPage, getBills } from "../pages/Bills/Bills.js"
 
 import router from "../app/Router.js";
 
@@ -164,7 +165,6 @@ describe("Bills.js deeper tests", () => {
   test("handleClickIconEye should inject image in modal", () => {
     const icon = document.querySelector('[data-testid="icon-eye"]')
 
-    const { initBillsPage } = require("../pages/Bills/Bills.js")
 
     initBillsPage({
       document,
@@ -184,7 +184,6 @@ describe("Bills.js deeper tests", () => {
   })
 
   test("getBills should format date correctly", async () => {
-    const { getBills } = require("../pages/Bills/Bills.js")
 
     const mockStore = {
       bills: () => ({
@@ -200,7 +199,6 @@ describe("Bills.js deeper tests", () => {
   })
 
   test("getBills should fallback if formatDate fails", async () => {
-    const { getBills } = require("../pages/Bills/Bills.js")
 
     const mockStore = {
       bills: () => ({
@@ -216,8 +214,7 @@ describe("Bills.js deeper tests", () => {
   })
 
   test("getBills should throw error when API fails", async () => {
-    const { getBills } = require("../pages/Bills/Bills.js")
-
+    
     const mockStore = {
       bills: () => ({
         list: () => Promise.reject("API ERROR")
