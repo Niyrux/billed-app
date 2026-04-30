@@ -43,7 +43,11 @@ const handleSubmitEmployee = (e, { localStorage, onNavigate, store }) => {
  */
 const handleSubmitAdmin = (e, { localStorage, onNavigate, store }) => {
   e.preventDefault()
+/*
 
+BUG FIX: Les data-testid utilisés pour récupérer les inputs étaient incorrects (employee au lieu de admin), ce qui empêchait la récupération des valeurs et donc la connexion/création de l'utilisateur admin. J'ai corrigé les sélecteurs pour qu'ils ciblent les bons éléments du DOM.
+
+*/ 
   const user = {
     type: "Admin",
     email: e.target.querySelector(`input[data-testid="admin-email-input"]`).value,

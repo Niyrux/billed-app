@@ -28,7 +28,7 @@ describe("Given I am connected as an employee", () => {
       const windowIcon = screen.getByTestId('icon-window')
       //to-do write expect expression
 
-    })
+    })/* fix bug antichrono*/
     test("Then bills should be ordered from earliest to latest", () => {
       const billsSorted = [...bills].sort((a, b) => (a.date < b.date ? 1 : -1))
       document.body.innerHTML = BillsUI({ data: billsSorted })

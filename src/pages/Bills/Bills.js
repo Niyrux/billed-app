@@ -55,7 +55,7 @@ const handleClickIconEye = (icon, document) => {
  */
 export const getBills = async (store) => {
   if (!store) return []
-
+/** fix bug changement du trie et dans le bills.js test */
   try {
     const snapshot = await store.bills().list()
 snapshot.sort((a, b) => (a.date < b.date ? 1 : -1))

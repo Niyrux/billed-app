@@ -132,6 +132,8 @@ export const handleClickIconEye = (document) => {
  * Gère l'édition d'un ticket
  * Exported for testing purposes
  */
+/* bug fix: Ajout de vérifications pour s'assurer que les éléments du DOM existent avant d'essayer de les manipuler, afin d'éviter des erreurs lors de l'exécution des tests. */
+
 export const handleEditTicket = (e, bill, bills, document) => {
   if (dashboardState.counter === undefined || dashboardState.id !== bill.id) {
     dashboardState.counter = 0
